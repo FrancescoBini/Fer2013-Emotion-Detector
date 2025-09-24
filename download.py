@@ -1,17 +1,8 @@
-import kagglehub
 import os
-from PIL import Image
-import matplotlib.pyplot as plt
-import torch
-import torch.nn as nn
-from torch.utils.data import Dataset
-from torchvision import transforms
-from torchvision import models
-from torchvision.datasets import ImageFolder
-from torch.utils.data import DataLoader
-import torch.optim as optim
-from io import BytesIO
 from datasets import load_dataset
+import gdown
+import zipfile
+import kagglehub
 
 # WORKING VERSION - DOWNLOAD
 # Download latest version
@@ -21,16 +12,22 @@ from datasets import load_dataset
 # test_path = "/Users/francesco/.cache/kagglehub/datasets/msambare/fer2013/versions/1/test"
 
 
-# Get the base directory of your project (where download.py lives)
+## GOOGLE DRIVE
+# https://drive.google.com/file/d/10TolZhzTxuy7IDHHcg6-C02_2MfrnmKq/view?usp=sharing
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# Paths to the train and test folders relative to your project
 train_path = os.path.join(BASE_DIR, "train")
-test_path = os.path.join(BASE_DIR, "test")
+test_path  = os.path.join(BASE_DIR, "test")
 
-# Optional: check if directories exist
 if not os.path.exists(train_path) or not os.path.exists(test_path):
-    raise FileNotFoundError("Train or test folder not found. Make sure they exist in the project root.")
-
-print("Train directory:", train_path)
-print("Test directory:", test_path)
+    url = "https://drive.google.com/uc?id=10TolZhzTxuy7IDHHcg6-C02_2MfrnmKq"
+    zip_path = os.path.join(BASE_DIR, "fer2013.zip")
+    
+    print("Downloading FER2013 dataset...")
+    gdown.download(url, zip_path, quiet=False)
+    
+    print("Extracting dataset...")
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        zip_ref.extractall(BASE_DIR)
+    
+    print("Done! Dataset is ready.")
